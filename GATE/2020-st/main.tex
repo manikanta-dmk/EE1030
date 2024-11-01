@@ -1,0 +1,149 @@
+\let\negmedspace\undefined
+\let\negthickspace\undefined
+\documentclass[journal]{IEEEtran}
+\usepackage[a5paper, margin=10mm, onecolumn]{geometry}
+%\usepackage{lmodern} % Ensure lmodern is loaded for pdflatex
+\usepackage{tfrupee} % Include tfrupee package
+
+\setlength{\headheight}{1cm} % Set the height of the header box
+\setlength{\headsep}{0mm}     % Set the distance between the header box and the top of the text
+
+\usepackage{gvv-book}
+\usepackage{gvv}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{txfonts}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{gensymb}
+\usepackage{comment}
+\usepackage[breaklinks=true]{hyperref}
+\usepackage{tkz-euclide} 
+\usepackage{listings}
+\usepackage{gvv}
+\usepackage{tikz}
+\def\inputGnumericTable{}                                 
+\usepackage[latin1]{inputenc}                                
+\usepackage{color}                                            
+\usepackage{array}                                            
+\usepackage{longtable}                                       
+\usepackage{calc}                                             
+\usepackage{multirow}                                         
+\usepackage{hhline}                                           
+\usepackage{ifthen}                                           
+\usepackage{lscape}
+\begin{document}
+
+\bibliographystyle{IEEEtran}
+\vspace{3cm}
+
+\title{Gate Questions}
+\author{EE24BTECH11013-DASARI MANIKANTA
+}
+ \maketitle
+% \newpage
+% \bigskip
+{\let\newpage\relax\maketitle}
+
+\renewcommand{\thefigure}{\theenumi}
+\renewcommand{\thetable}{\theenumi}
+\setlength{\intextsep}{10pt} % Space between text and floats
+
+
+\numberwithin{equation}{enumi}
+\numberwithin{figure}{enumi}
+\renewcommand{\thetable}{\theenumi}
+
+\begin{enumerate}
+    \item Consider a two-way fixed effects analysis of variance model without interaction effect and one observation per cell. If there are $5$ factors and $4$ columns, then the degrees of freedom for the error sum of squares is\hfill[February 2020]
+    \begin{enumerate}
+        \item $20$
+        \item $19$
+        \item $18$
+        \item $17$
+    \end{enumerate}
+    
+    \item Let $X_1, \dots, X_n$ be a random sample of size $n\brak{ \geq 2 }$ from an exponential distribution with the probability density function\hfill[February 2020]
+    \begin{align}
+    f\brak{x; \theta} = 
+    \begin{cases} 
+      \frac{1}{\theta} e^{-x/\theta}, & x > 0 \\ 
+      0, & \text{otherwise} 
+    \end{cases}
+    \end{align}
+    where $\theta \in \brak{1, 2}$. Consider the problem of testing $H_0: \theta = 1$ against $H_1: \theta = 2$, based on $X_1, \dots, X_n$. Which of the following statements is TRUE?\hfill[February 2020]
+    \begin{enumerate}
+        \item Likelihood ratio test at level $\alpha\brak{0 < \alpha < 1}$ leads to the same critical region as the corresponding most powerful test at the same level.
+        \item Critical region of level $\alpha\brak{0 < \alpha < 1}$ likelihood ratio test is ${\brak{x_1, \dots, x_n}: \sum_{i=1}^n x_i < 0.5 x_{\brak{n,1-\alpha}}}$ where $x_{\brak{n,1-\alpha}}$ is the $\brak{1 - \alpha}$-quantile of the central chi-square distribution with $2n$ degrees of freedom.
+        \item Likelihood ratio test for testing $H_0$ against $H_1$ does not exist.
+        \item At any fixed level $\alpha\brak{0 < \alpha < 1}$, the power of the likelihood ratio test is lower than that of the most powerful test.
+    \end{enumerate}
+     \item The characteristic function of a random variable $X$ is given by
+    \begin{align}
+    \varphi_X(t) = \begin{cases} 
+      \frac{\sin {t} \cos {t}}{t}, & \text{for } t \neq 0 \\ 
+      1, & \text{for } t = 0 
+    \end{cases}
+    \end{align}
+    Then $P\brak{|X| \leq \frac{3}{4} } = \underline{\hspace{1cm}}$ \brak{\text{correct up to two decimal places}}.\hfill[February 2020]
+    \item Let the random vector $X = \brak{X_1, X_2, X_3, X_4}^T$ follow $N_4\brak{\mu, \Sigma}$ distribution, where
+    \begin{align}
+    \mu = \myvec{0 \\ 0 \\ 0 \\ 0} \text{and} \Sigma = \myvec{1 & 0.7 & 0.6 & 0.1 \\ 0.7 & 1 & 0.3 & 0.4 \\ 0.6 & 0.3 & 1 & 0.8 \\ 0.1 & 0.4 & 0.8 & 1}.
+    \end{align}
+    Then
+    \\$P\brak{X_1 + X_2 + X_3 + X_4 > 0} = \underline{\hspace{0.5cm}}$ \brak{\text{correct up to two decimal places}}.\hfill[February 2020]
+    \item Let $\brak{X_n}_{n \geq 0}$ be a homogeneous Markov chain with state space $\brak{0,1}$ and one-step transition probability matrix $P = \myvec{\frac{1}{3} & \frac{2}{3} \\ \frac{1}{4} & \frac{3}{4}}$. If $P\brak{X_0 = 0} = \frac{1}{3}$, then
+    \begin{align}
+    27 \times E\brak{X_2} = \underline{\hspace{3cm}} \brak{\text{correct up to two decimal place.}}
+    \end{align}\hfill[February 2020]
+     \item Let $E$, $F$ and $G$ be mutually independent events with $P\brak{E}=\frac{1}{2}$,$P\brak{F} = \frac{1}{3}$, and $P\brak{G}=\frac{1}{4}$. Let $p$ be the probability that at least two of the events among $E$, $F$, and $G$ occur.Then $12 \times p = \underline{\hspace{1cm}}$\hfill[February 2020]
+     \item Let the joint probability mass function of $\brak{X, Y, Z}$ be
+    \begin{align}
+    P\brak{X = x, Y = y, Z = z} = \frac{10!}{x! y! z!} \brak{0.2}^x \brak{0.3}^y \brak{0.4}^z \brak{0.1}^t
+    \end{align}
+    where $t = 10 - x - y - z$, $x, y, z = 0, 1, \dots, 10$; $x + y + z \leq 10$.
+    Then the variance of the random variable $Y + 2Z$ equals $\underline{\hspace{0.2cm}}$ \brak{\text{correct up to two decimal places}}.\hfill[February 2020]
+    \item The total number of standard $4 \times 4$ Latin squares is $\underline{\hspace{1cm}}$.\hfill[February 2020]
+     \item Let $X$ be a $4 \times 1$ random vector with ${E}\brak{X} = 0$ and variance-covariance matrix
+    \begin{align}
+    \Sigma = \myvec{1 & 0.5 & 0.5 & 0.5 \\ 0.5 & 1 & 0.5 & 0.5 \\ 0.5 & 0.5 & 1 & 0.5 \\ 0.5 & 0.5 & 0.5 & 1}.
+    \end{align}
+    Let $Y$ be the $4 \times 1$ random vector of principal components derived from $\Sigma$. The proportion of total variation explained by the first two principal components equals $\underline{\hspace{3cm}}$ \brak{\text{correct up to two decimal places}}.\hfill[February 2020]
+  \item Let $X_1, \dots, X_n$ be a random sample of size $n \geq 2$ from an exponential distribution with the probability density function
+    \begin{align}
+    f\brak{x; \theta} = 
+    \begin{cases} 
+      \theta e^{-\theta x}, & x \geq 0 \\ 
+      0, & \text{otherwise} 
+    \end{cases}
+    \end{align}
+    where $\theta \in \brak{0, \infty}$. If $X_{(2)} = \min {X_2, \dots, X_n}$, then the conditional expectation
+    \begin{align}
+    {E} \brak{ \frac{X_{\brak{2}}}{\theta} = 1  |  X_1 = x,  X_2 = z } = \underline{\hspace{3cm}}.
+    \end{align}\hfill[February 2020]
+     \item Let $Y_i = a + b x_i + \epsilon_i,i = 1, 2, \dots, 7$, where $x_i$ are fixed covariates and $\epsilon_i$ are independent and identically distributed random variables with mean zero and finite variance. Suppose that $a$ and $b$ are the least squares estimators of $a$ and $b$, respectively. Given the following data:
+    \begin{align}
+    \sum_{i=1}^7 x_i = 0,\sum_{i=1}^7 x_i^2 = 28,\sum_{i=1}^7 x_i y_i = 28,\sum_{i=1}^7 y_i = 21 \text{and}\sum_{i=1}^7 y_i^2 = 91,
+    \end{align}
+    where $y_i$ is the observed value of $Y_i, i = 1, \dots, 7$. Then the correlation coefficient between $a$ and $b$ equals $\underline{\hspace{3cm}}$.\hfill[February 2020]
+     \item Let ${0, 1, 2, 3}$ be an observed sample of size 4 from $N\brak{\theta, 5}$ distribution, where \\$\theta \in [2, \infty)$. Then the maximum likelihood estimate of $\theta$ based on the observed sample is $\underline{\hspace{3cm}}$.\hfill[February 2020]
+    \item Let $f: \mathbb{R} \to \mathbb{R}$ be defined by
+    \begin{align}
+    f(x,y) = x^4 - 2 x^2 y + 16 y + 17,
+    \end{align}
+    where $\mathbb{R}$ denotes the set of all real numbers. Then\hfill[February 2020]
+    \begin{enumerate}
+        \item $f$ has a local minimum at $\brak{2, 3}$
+        \item $f$ has a local maximum at $\brak{2, 3}$
+        \item $f$ has a saddle point at $\brak{2, \frac{4}{3}}$
+        \item $f$ is bounded
+    \end{enumerate}
+    
+\end{enumerate}
+
+\end{document}
