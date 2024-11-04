@@ -1,0 +1,136 @@
+\let\negmedspace\undefined
+\let\negthickspace\undefined
+\documentclass[journal]{IEEEtran}
+\usepackage[a5paper, margin=10mm, onecolumn]{geometry}
+%\usepackage{lmodern} % Ensure lmodern is loaded for pdflatex
+\usepackage{tfrupee} % Include tfrupee package
+
+\setlength{\headheight}{1cm} % Set the height of the header box
+\setlength{\headsep}{0mm}     % Set the distance between the header box and the top of the text
+
+\usepackage{gvv-book}
+\usepackage{gvv}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{txfonts}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{gensymb}
+\usepackage{comment}
+\usepackage[breaklinks=true]{hyperref}
+\usepackage{tkz-euclide} 
+\usepackage{listings}
+\usepackage{gvv}
+\usepackage{tikz}
+\def\inputGnumericTable{}                                 
+\usepackage[latin1]{inputenc}                                
+\usepackage{color}                                            
+\usepackage{array}                                            
+\usepackage{longtable}                                       
+\usepackage{calc}                                             
+\usepackage{multirow}                                         
+\usepackage{hhline}                                           
+\usepackage{ifthen}                                           
+\usepackage{lscape}
+\begin{document}
+
+\bibliographystyle{IEEEtran}
+\vspace{3cm}
+
+\title{Gate Questions}
+\author{EE24BTECH11013-DASARI MANIKANTA
+}
+ \maketitle
+% \newpage
+% \bigskip
+{\let\newpage\relax\maketitle}
+
+\renewcommand{\thefigure}{\theenumi}
+\renewcommand{\thetable}{\theenumi}
+\setlength{\intextsep}{10pt} % Space between text and floats
+
+
+\numberwithin{equation}{enumi}
+\numberwithin{figure}{enumi}
+\renewcommand{\thetable}{\theenumi}
+
+\begin{enumerate}
+   \item The number of subgroups of a cyclic group of order $12$ is \underline{\hspace{1cm}} \hfill[February 2022]
+   \item The radius of convergence of the series 
+   \begin{align}
+       \sum_{n \ge 0} 3^{n+1} z^{2n}, z \in \mathbb{C}
+\end{align}\hfill[February 2022]
+\item The number of zeroes of the polynomial 
+\begin{align}
+    2z^7-7z^5+2z^3-z+1
+\end{align} 
+in the unit disc $\cbrak{z \in \mathbb{C} : \abs{z}<1}$ is \underline{\hspace{2cm}} \hfill[February 2022]
+\item If $P\brak{x}$ is a polynomial of degree $5$ and
+\begin{align}
+\alpha = \sum_{i=0}^6 P\brak{x_i} \brak{ \prod_{\substack{j=0 \\ j \neq i}}^6 \brak{x_i - x_j}^{-1}},
+\end{align}
+where $x_0, x_1, \dots, x_6$ are distinct points in the interval $\sbrak{2,3}$, then the value of $\alpha^2 - \alpha + 1$ is \underline{\hspace{2cm}}.\hfill[February 2022] 
+\item If the function $f\brak{x, y} = x^2 + xy + y^2 + \frac{1}{x} + \frac{1}{y}$, $x \neq 0, y \neq 0$ attains its local minimum value at the point $\brak{a, b}$, then the value of $a^3 + b^3$ is \underline{\hspace{2cm}}. \brak{\text{round off to two decimal places}}.\hfill[February 2022] 
+\item The maximum value of $f\brak{x, y} = 49-x^2-y^2$ on the line $x+3y = 10$ \\is\underline{\hspace{2cm}}.\hfill[February 2022]
+\item If the ordinary differential equation
+\begin{align}
+x^2 \frac{d^2 \phi}{dx^2} + x \frac{d \phi}{dx} + x^2 \phi = 0, x > 0
+\end{align}
+has a solution of the form 
+$\phi(x) = x^r \sum_{n=0}^{\infty} a_n x^n$,
+where $a_n$'s are constants and $a_0 \neq 0$, then the value of $r^2 + 1$ is \underline{\hspace{2cm}}.\hfill[February 2022] 
+\item The Bessel functions $J_\alpha\brak{x}$, $x > 0$, $\alpha \in \mathbb{R}$ satisfy
+$J_{\alpha-1}\brak{x} + J_{\alpha+1}\brak{x} = \frac{2 \alpha}{x} J_{\alpha}(x)$.
+Then, the value of $\brak{\pi J_{\frac{3}{2}}\brak{\pi}}^2$ is \underline{\hspace{2cm}}.\hfill[February 2022] 
+\item The partial differential equation
+\begin{align}
+7 \frac{\partial^2 u}{\partial x^2} + 16 \frac{\partial^2 u}{\partial x \partial y} + 4 \frac{\partial^2 u}{\partial y^2} = 0
+\end{align}
+is transformed to
+\begin{align}
+A \frac{\partial^2 u}{\partial \xi^2} + B \frac{\partial^2 u}{\partial \xi \partial \eta} + C \frac{\partial^2 u}{\partial \eta^2} = 0,
+\end{align}
+using $\xi = y - 2x$ and $\eta = 7y - 2x$.
+Then, the value of $\frac{1}{{12}^3} \brak{B^2 - 4AC}$ \\is \underline{\hspace{2cm}}.\hfill[February 2022]
+\item Let $\mathbb{R}\sbrak{X}$ denote the ring of polynomials in $X$ with real coefficients. Then, the quotient ring $\mathbb{R}\sbrak{X}/\brak{X^4 + 4}$ is\hfill[February 2022]
+\begin{enumerate}
+    \item a field
+    \item an integral domain, but not a field
+    \item not an integral domain, but also has $0$ as the the only nilpotent element
+    \item a ring which contains non zero nilpotent elements
+\end{enumerate}
+\item Consider the following conditions on two proper non-zero ideals $J_1$ and $J_2$ of a non-zero commutative ring $R$.
+\\\textbf{P}: For any $r_1, r_2 \in R$, there exists a unique $r \in R$ such that $r - r_1 \in J_1$ and $r - r_2 \in J_2$.
+\\\textbf{Q}: $J_1 + J_2 = R$
+Then, which of the following statements is TRUE?\hfill[February 2022]
+\begin{enumerate}
+    \item \textbf{P} implies \textbf{Q} does not imply \textbf{P}
+    \item \textbf{Q} implies \textbf{P} but \textbf{P} does not imply \textbf{Q}
+    \item \textbf{P} implies \textbf{Q} and \textbf{Q} implies \textbf{P}
+    \item \textbf{P} does not imply \textbf{Q} and \textbf{Q} does not imply \textbf{P}
+\end{enumerate}
+\item \textbf{P}: Suppose that $\sum_{n=0}^{\infty} a_n x^n$ converges at $x = -3$ and diverges at $x = 6$. Then 
+$\sum_{n=0}^{\infty} \brak{-1}^n a_n$ converges.
+\\\textbf{Q}: The interval of convergence of the series $\sum_{n=2}^{\infty} \frac{\brak{-1}^n x^n}{4^n \log_e n}$ is $\sbrak{-4,4}$.
+\\Which of the following statements is TRUE?\hfill[February 2022]
+\begin{enumerate}
+    \item \textbf{P} is true and \textbf{Q} is true
+    \item \textbf{P} is false and \textbf{Q} is false
+    \item \textbf{P} is true and \textbf{Q} is false
+    \item \textbf{P} is false and \textbf{Q} is true
+\end{enumerate}
+\item Let $f : \sbrak{-\pi, \pi} \rightarrow \mathbb{R}$ be a continuous function such that $f(x) > \frac{f(0)}{2}$, $\abs{x} < \delta$ for some $\delta$ satisfying $0 < \delta < \pi$. Define $P_{n, \delta}\brak{x} = \brak{1 + \cos {x} - \cos {\delta}}^n$, for $n = 1, 2, 3, \dots$ Then, which of the following statements is TRUE?\hfill[February 2022]
+\begin{enumerate}
+\item $\lim_{n \to \infty} \int_{0}^{2\delta} f\brak{x} P_{n, \delta}\brak{x} dx = 0$
+\item$\lim_{n \to \infty} \int_{-2\delta}^{0} f\brak{x} P_{n, \delta}\brak{x} dx = 0$
+\item $\lim_{n \to \infty} \int_{-\delta}^{\delta} f\brak{x} P_{n, \delta}\brak{x} dx = 0$
+\item $\lim_{n \to \infty} \int_{[-\pi, \pi] \backslash [-\delta, \delta]} f\brak{x} P_{n, \delta}\brak{x} dx = 0$
+\end{enumerate}
+\end{enumerate}
+
+\end{document}
