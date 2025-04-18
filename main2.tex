@@ -1,0 +1,369 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{verbatim}      % For \begin{verbatim} ... \end{verbatim}
+\usepackage{graphicx}      % For including images like GTKWave screenshots
+
+\geometry{margin=1in}
+\title{Digital Systems Lab Assignment-2}
+\author{Murra Rajesh Kumar Reddy - EE24BTECH11043}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Question 1: Convolution of Two Vectors}
+
+\subsection*{Approach}
+
+The problem involves performing a convolution operation between two 8-element vectors of 4-bit values. The operation follows the typical convolution approach, where each element of the output vector is the result of multiplying elements of the input vectors and accumulating the results. 
+
+The inputs are two vectors \( A \) and \( B \), each of size 8, containing 4-bit values. The output is a 16-element vector \( Y \) of 4-bit values, which represents the convolution result. This module uses nested loops to calculate the convolution, multiplying corresponding elements of \( A \) and \( B \), then adding them to form the resulting vector.
+
+\subsection*{Functionality}
+
+Inputs: 
+  - \( A[7:0] \): 8-element vector of 4-bit values.
+  - \( B[7:0] \): 8-element vector of 4-bit values.
+
+Outputs: 
+  - \( Y[15:0] \): 16-element vector of 4-bit values representing the convolution result.
+
+Operation:
+  - The convolution operation is performed by multiplying corresponding elements of \( A \) and \( B \) and then summing the results to form the output vector \( Y \).
+  - The result of each multiplication is stored in a temporary register and then added to the appropriate index in the output vector \( Y \).
+
+\subsection*{Code}
+
+\begin{verbatim}
+module convolution_A_B(
+    input [3:0] A[7:0],  // 8-element vector of 4-bit values
+    input [3:0] B[7:0],  // 8-element vector of 4-bit values
+    output [3:0] Y[15:0] // 16-element vector of 4-bit output values
+);
+    integer i, j;
+    reg [7:0] result;  // Temporary 8-bit register to store partial sum
+    reg [3:0] temp;    // Temporary 4-bit register for storing multiplication results
+
+    always @(*) begin
+        // Initialize output Y to zero
+        for (i = 0; i < 16; i = i + 1) begin
+            Y[i] = 4'b0000;
+        end
+        
+        // Perform convolution (ignoring overflow)
+        for (i = 0; i < 8; i = i + 1) begin
+            for (j = 0; j < 8; j = j + 1) begin
+                // Multiply and accumulate the result, ignoring overflow
+                temp = A[i] * B[j];  // Multiply corresponding elements (4-bit)
+                result = {4'b0000, Y[i + j]} + {4'b0000, temp};  // Sum previous result and new product
+                Y[i + j] = result[3:0]; // Store the 4-bit result (ignoring overflow)
+            end
+        end
+    end
+endmodule
+\end{verbatim}
+
+\subsection*{Testbench Code}
+
+\begin{verbatim}
+`timescale 1ns/1ps
+
+module convolution_A_B_tb;
+
+    reg [3:0] A[7:0];  // Input A: 8 elements, 4-bit each
+    reg [3:0] B[7:0];  // Input B: 8 elements, 4-bit each
+    wire [3:0] Y[15:0]; // Output Y: 16 elements, 4-bit each
+
+    // Instantiate the convolution module
+    convolution_A_B uut (
+        .A(A),
+        .B(B),
+        .Y(Y)
+    );
+
+    initial begin
+        // Test Case 1: Convolution with basic values
+        A[0] = 4'b0001; A[1] = 4'b0010; A[2] = 4'b0011; A[3] = 4'b0100;
+        A[4] = 4'b0101; A[5] = 4'b0110; A[6] = 4'b0111; A[7] = 4'b1000;
+
+        B[0] = 4'b0001; B[1] = 4'b0010; B[2] = 4'b0011; B[3] = 4'b0100;
+        B[4] = 4'b0101; B[5] = 4'b0110; B[6] = 4'b0111; B[7] = 4'b1000;
+
+        #20;
+        $finish;
+    end
+
+    // Monitor the output
+    initial begin
+        $monitor("At time %t, Y = %b", $time, Y);
+    end
+
+endmodule
+\end{verbatim}
+
+\subsection*{GTKWave Form}
+\vspace{4cm} % Leave space for waveform image
+\begin{center}
+    \includegraphics[width=1\textwidth]{gtk3.png}
+\end{center}
+\newpage
+
+
+\section*{Question 2: 8-bit Adder Design}
+
+\subsection*{Approach}
+The design implements an 8-bit adder in Verilog using a `for` loop and manual carry calculation, where carry propagates across bits. The design includes carry-in and outputs a 9-bit sum.
+
+\subsection*{Functionality}
+The adder performs the addition of two 8-bit numbers with a carry-in. The sum is stored in a 9-bit register to accommodate overflow. Intermediate carry is manually handled to simulate ripple-carry propagation.
+
+\subsection*{Design Code}
+\begin{lstlisting}[language=Verilog]
+module 8_bitadder (
+    input [7:0] A, B,
+    input c_in,
+    output reg [8:0] sum
+);
+    reg [8:0] c_out;
+
+    always @(*) begin
+        c_out[0] = c_in;
+        for (integer i = 0; i < 8; i = i + 1) begin
+            sum[i] = A[i] ^ B[i] ^ c_out[i];
+            c_out[i+1] = (A[i] & B[i]) | (B[i] & c_out[i]) | (c_out[i] & A[i]);
+        end
+        sum[8] = c_out[8];
+    end
+endmodule
+\end{lstlisting}
+
+\subsection*{Testbench Code}
+\begin{verbatim}
+`timescale 1ns / 1ps
+
+module tb_8_bitadder;
+
+    // Inputs
+    reg [7:0] A, B;
+    reg c_in;
+
+    // Output
+    wire [8:0] sum;
+
+    // Instantiate the Unit Under Test (UUT)
+    8_bitadder uut (
+        .A(A),
+        .B(B),
+        .c_in(c_in),
+        .sum(sum)
+    );
+
+    initial begin
+        // Display header
+        $display("Time\tA\t\tB\t\tCin\tSum");
+        $monitor("%0dns\t%b\t%b\t%b\t%b", $time, A, B, c_in, sum);
+
+        // Test case 1: A = 5, B = 10, Cin = 0
+        A = 8'd5; B = 8'd10; c_in = 0;
+        #10;
+
+        // Test case 2: A = 255, B = 1, Cin = 0
+        A = 8'd255; B = 8'd1; c_in = 0;
+        #10;
+
+
+        // Test case 3: A = 128, B = 128, Cin = 1
+        A = 8'b10000000; B = 8'b10000000; c_in = 1;
+        #10;
+
+
+	// Test case 4: A = 0, B = 0, Cin = 1
+        A = 8'b00000000; B = 8'b00000000; c_in = 1;
+        #10;
+
+
+        // Test case 5: A = 170, B = 85, Cin = 1
+        A = 8'b10101010; B = 8'b01010101; c_in = 1;
+        #10;
+
+
+        \$finish;
+    end
+
+endmodule
+\end{verbatim}
+
+\subsection*{GTKWave Simulation Output}
+
+\begin{center}
+    \includegraphics[width=0.85\textwidth]{gtk1.png}
+\end{center}
+
+
+\newpage
+
+\section*{Question 3:Ripple Carry Adder Using only NAND Gates}
+
+\subsection*{Approach}
+All logic gates are implemented using only NAND gates with a defined delay. A full adder is constructed using these gates. A 4-bit ripple carry adder is then built using the full adders.
+
+\subsection*{Functionality}
+The full adder computes both the sum and carry outputs for a single-bit binary addition using logic gates. The ripple carry adder chains four full adders to compute the sum of two 4-bit numbers.
+
+\subsection*{Design Code}
+\begin{lstlisting}[language=Verilog]
+// NAND Gate with 1ns delay
+module nand_gate(input A, input B, output Y);
+    assign #1 Y = ~(A & B);
+endmodule
+
+// XOR gate using NAND gates
+module xor_gate(input A, input B, output Y);
+    wire n1, n2, n3;
+    nand_gate U1 (.A(A), .B(B), .Y(n1));
+    nand_gate U2 (.A(A), .B(n1), .Y(n2));
+    nand_gate U3 (.A(n1), .B(B), .Y(n3));
+    nand_gate U4 (.A(n2), .B(n3), .Y(Y));
+endmodule
+
+// AND gate using NAND gates
+module and_gate(input A, input B, output Y);
+    wire n1;
+    nand_gate U1 (.A(A), .B(B), .Y(n1));
+    nand_gate U2 (.A(n1), .B(n1), .Y(Y));
+endmodule
+
+// OR gate using NAND gates
+module or_gate(input A, input B, output Y);
+    wire n1, n2;
+    nand_gate U1 (.A(A), .B(A), .Y(n1));
+    nand_gate U2 (.A(B), .B(B), .Y(n2));
+    nand_gate U3 (.A(n1), .B(n2), .Y(Y));
+endmodule
+
+// Full Adder using gates
+module full_adder(input A, input B, input Cin, output Sum, output Cout);
+    wire AxorB, AandB, AxorBandCin;
+    xor_gate U1 (.A(A), .B(B), .Y(AxorB));
+    and_gate U2 (.A(A), .B(B), .Y(AandB));
+    xor_gate U3 (.A(AxorB), .B(Cin), .Y(Sum));
+    and_gate U4 (.A(AxorB), .B(Cin), .Y(AxorBandCin));
+    or_gate  U5 (.A(AandB), .B(AxorBandCin), .Y(Cout));
+endmodule
+
+// 4-bit Ripple Carry Adder
+module ripple_carry_adder(
+    input  [3:0] A, B,
+    input  Cin,
+    output [4:0] Sum_ext
+);
+    wire [3:0] sum_internal;
+    wire C1, C2, C3, Cout;
+    full_adder FA0 (.A(A[0]), .B(B[0]), .Cin(Cin),  .Sum(sum_internal[0]), .Cout(C1));
+    full_adder FA1 (.A(A[1]), .B(B[1]), .Cin(C1),   .Sum(sum_internal[1]), .Cout(C2));
+    full_adder FA2 (.A(A[2]), .B(B[2]), .Cin(C2),   .Sum(sum_internal[2]), .Cout(C3));
+    full_adder FA3 (.A(A[3]), .B(B[3]), .Cin(C3),   .Sum(sum_internal[3]), .Cout(Cout));
+    assign Sum_ext = {Cout, sum_internal}; // 5-bit sum
+endmodule
+\end{lstlisting}
+
+\subsection*{Testbench Code}
+
+\begin{verbatim}
+`timescale 1ns/1ps
+
+module ripple_carry_adder_tb;
+
+    reg  [3:0] A, B;
+    reg        Cin;
+    wire [4:0] Sum_ext;
+
+    // Instantiate the ripple carry adder
+    ripple_carry_adder uut (
+        .A(A),
+        .B(B),
+        .Cin(Cin),
+        .Sum_ext(Sum_ext)
+    );
+
+    initial begin
+        $dumpfile("ripple_carry_adder.vcd");
+        $dumpvars(0, ripple_carry_adder_tb);
+
+        // Test Case 1: (0, 0, 0) -> 0 + 0 + 0 = 0
+        A = 4'b0000; B = 4'b0000; Cin = 0; #20;
+
+        // Test Case 2: (5, 3, 1) -> 5 + 3 + 1 = 9
+        A = 4'b0101; B = 4'b0011; Cin = 1; #20;
+
+        // Test Case 3: (15, 15, 0) -> 15 + 15 + 0 = 30
+        A = 4'b1111; B = 4'b1111; Cin = 0; #20;
+
+        // Test Case 4: (10, 13, 1) -> 10 + 13 + 1 = 24
+        A = 4'b1010; B = 4'b1101; Cin = 1; #20;
+
+        \$finish;
+    end
+
+endmodule
+\end{verbatim}
+
+\subsection*{GTKWave Result}
+\vspace{4cm} % Leave space for waveform image
+\begin{center}
+    \includegraphics[width=1\textwidth]{gtk2.png}
+\end{center}
+\newpage
+
+\section*{Delay Analysis of 4-bit Ripple Carry Adder}
+
+\subsection*{Gate Delays}
+\begin{itemize}
+  \item \textbf{XOR gate}: 4 NAND gates $\Rightarrow$ delay = \SI{3}{\nano\second}
+  \item \textbf{AND gate}: 2 NAND gates $\Rightarrow$ delay = \SI{2}{\nano\second}
+  \item \textbf{OR gate}: 3 NAND gates $\Rightarrow$ delay = \SI{3}{\nano\second}
+\end{itemize}
+
+\subsection*{Full Adder Delay}
+
+\textbf{Sum path:}
+\[
+A \oplus B = \SI{3}{\nano\second}, \quad (A \oplus B) \oplus Cin = \SI{3}{\nano\second} \Rightarrow \text{Sum delay} = \SI{6}{\nano\second}
+\]
+
+\textbf{Carry path:}
+\[
+A \land B = \SI{2}{\nano\second}, \quad (A \oplus B) = \SI{3}{\nano\second}, \quad (A \oplus B) \land Cin = \SI{2}{\nano\second}, \quad \text{OR} = \SI{3}{\nano\second}
+\]
+\[
+\text{Total Cout delay} = \max(2, 3+2) + 3 = \SI{8}{\nano\second}
+\]
+
+\subsection*{Ripple Carry Delay Summary}
+\begin{align*}
+\text{Cout}_0 &= \SI{8}{\nano\second} \\
+\text{Cout}_1 &= \SI{8}{\nano\second} + \SI{8}{\nano\second} = \SI{16}{\nano\second} \\
+\text{Cout}_2 &= \SI{16}{\nano\second} + \SI{8}{\nano\second} = \SI{24}{\nano\second} \\
+\text{Cout}_3 &= \SI{24}{\nano\second} + \SI{8}{\nano\second} = \SI{32}{\nano\second}
+\end{align*}
+
+\textbf{Sum Path Delays:}
+\begin{align*}
+\text{Sum}[0] &= \SI{6}{\nano\second} \\
+\text{Sum}[1] &= \SI{8}{\nano\second} + \SI{6}{\nano\second} = \SI{14}{\nano\second} \\
+\text{Sum}[2] &= \SI{16}{\nano\second} + \SI{6}{\nano\second} = \SI{22}{\nano\second} \\
+\text{Sum}[3] &= \SI{24}{\nano\second} + \SI{6}{\nano\second} = \SI{30}{\nano\second}
+\end{align*}
+
+\subsection*{Final Result}
+\begin{itemize}
+  \item \textbf{Worst-case delay to any Sum bit:} \SI{30}{\nano\second}
+  \item \textbf{Worst-case delay to final Cout:} \SI{32}{\nano\second}
+\end{itemize}
+
+\end{document}
+
