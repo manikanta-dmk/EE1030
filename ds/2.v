@@ -1,0 +1,200 @@
+module hybrid_traffic_signal_control_fsm (
+    input clk,
+    input reset,
+    input emergency_right,  // Emergency Right Mode (Stops both T1 and T2 for 10 mins)
+    input emergency_left,   // Emergency Left Mode (Stops only T1)
+    output reg [2:0] T1,         // T1 traffic light signal
+    output reg [2:0] T2,         // T2 traffic light signal
+    output reg buzzer_1,         // Buzzer for T1 (Yellow)
+    output reg buzzer_2,         // Buzzer for T2 (Yellow)
+    output reg T1_walk,          // Walk signal for T1
+    output reg T2_walk           // Walk signal for T2
+);
+
+    // Traffic light states
+    parameter RED = 2'b00, GREEN = 2'b01, YELLOW = 2'b10;
+    reg [1:0] state_T1, next_state_T1;  // Present and Next state for T1
+    reg [1:0] state_T2, next_state_T2;  // Present and Next state for T2
+
+    reg [7:0] timer_T1;
+    reg [7:0] timer_T2;
+    reg [23:0] emergency_timer; // Timer for 10-minute emergency mode
+
+    // Time parameters
+    parameter T_RED = 70;    // 35 sec @ 0.5s
+    parameter T_GREEN = 60;  // 30 sec
+    parameter T_YELLOW = 10; // 5 sec
+    parameter EMERGENCY_TIME = 600; // 10 minutes
+
+    // T1 FSM logic: Present and Next states for T1
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state_T1 <= RED;
+            timer_T1 <= 0;
+        end else if (emergency_right || emergency_left) begin
+            // If in emergency mode, hold T1 state
+            state_T1 <= RED;
+            timer_T1 <= 0;
+        end else begin
+            state_T1 <= next_state_T1;
+            timer_T1 <= (state_T1 != next_state_T1) ? 0 : timer_T1 + 1;
+        end
+    end
+
+    // T2 FSM logic: Present and Next states for T2
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state_T2 <= GREEN;
+            timer_T2 <= 0;
+            emergency_timer <= 0;
+        end else if (emergency_right) begin
+            // If in emergency_right, hold T2 in RED for 10 minutes
+            if (emergency_timer < EMERGENCY_TIME) begin
+                emergency_timer <= emergency_timer + 1;
+                state_T2 <= RED;
+            end else begin
+                emergency_timer <= 0;  // Reset emergency timer after 10 minutes
+                state_T2 <= next_state_T2;
+            end
+        end else if (emergency_left) begin
+            state_T2 <= next_state_T2;
+            timer_T2 <= (state_T2 != next_state_T2) ? 0 : timer_T2 + 1;
+        end else begin
+            state_T2 <= next_state_T2;
+            timer_T2 <= (state_T2 != next_state_T2) ? 0 : timer_T2 + 1;
+        end
+    end
+
+    // State transition logic for T1
+    always @(*) begin
+        next_state_T1 = state_T1;
+        case (state_T1)
+            RED:    if (timer_T1 >= T_RED)    next_state_T1 = GREEN;
+            GREEN:  if (timer_T1 >= T_GREEN)  next_state_T1 = YELLOW;
+            YELLOW: if (timer_T1 >= T_YELLOW) next_state_T1 = RED;
+        endcase
+    end
+
+    // State transition logic for T2
+    always @(*) begin
+        next_state_T2 = state_T2;
+        case (state_T2)
+            RED:    if (timer_T2 >= T_RED)    next_state_T2 = GREEN;
+            GREEN:  if (timer_T2 >= T_GREEN)  next_state_T2 = YELLOW;
+            YELLOW: if (timer_T2 >= T_YELLOW) next_state_T2 = RED;
+        endcase
+    end
+
+    // Output logic for T1 and T2 signals
+    always @(*) begin
+        T1 = 3'b100;  // Default RED
+        T2 = 3'b100;
+        buzzer_1 = 0;
+        buzzer_2 = 0;
+
+        case (state_T1)
+            RED:    T1 = 3'b100;
+            GREEN:  T1 = 3'b001;
+            YELLOW: begin T1 = 3'b010; buzzer_1 = 1; end
+        endcase
+
+        case (state_T2)
+            RED:    T2 = 3'b100;
+            GREEN:  T2 = 3'b001;
+            YELLOW: begin T2 = 3'b010; buzzer_2 = 1; end
+        endcase
+    end
+
+    // Walk signal logic for T1 and T2
+    always @(*) begin
+        if (emergency_right || emergency_left) begin
+            T1_walk = 0;  // Keep walk signal low during emergency
+            T2_walk = 0;
+        end else begin
+            T1_walk = (state_T1 == RED || state_T1 == YELLOW) ? 1 : 0;
+           T2_walk = (state_T2 == RED || state_T2 == YELLOW) ? 1 : 0;
+        end
+    end
+
+endmodule
+
+`timescale 1s / 1ms
+
+module testbench;
+
+    // Declare inputs as reg and outputs as wire
+    reg clk;
+    reg reset;
+    reg emergency_right;
+    reg emergency_left;
+    wire [2:0] T1;
+    wire [2:0] T2;
+    wire buzzer_1;
+    wire buzzer_2;
+    wire T1_walk;
+    wire T2_walk;
+
+    // Instantiate the hybrid traffic signal control FSM
+    hybrid_traffic_signal_control_fsm uut (
+        .clk(clk),
+        .reset(reset),
+        .emergency_right(emergency_right),
+        .emergency_left(emergency_left),
+        .T1(T1),
+        .T2(T2),
+        .buzzer_1(buzzer_1),
+        .buzzer_2(buzzer_2),
+        .T1_walk(T1_walk),
+        .T2_walk(T2_walk)
+    );
+
+    // Clock generation
+    always begin
+        #0.5 clk = ~clk;  // Generate clock with a period of 1s
+    end
+
+    // Stimulus block
+    initial begin
+        // Initialize signals
+        clk = 0;
+        reset = 0;
+        emergency_right = 0;
+        emergency_left = 0;
+        
+        // Apply reset
+        reset = 1;
+        #1;
+        reset = 0;
+
+        // Normal operation - Cycle through the states
+        #5;
+        // First Cycle: T1: Red -> Green -> Yellow; T2: Green -> Yellow -> Red
+        #70; // T1 Red for 35 sec (0.5 sec clock)
+        #60; // T1 Green for 30 sec (0.5 sec clock)
+        #10; // T1 Yellow for 5 sec (0.5 sec clock)
+        #70; // T2 Red for 35 sec (0.5 sec clock)
+        #60; // T2 Green for 30 sec (0.5 sec clock)
+        #10; // T2 Yellow for 5 sec (0.5 sec clock)
+        
+        // Test Emergency Right Mode (both FSMs stop for 10 mins)
+        emergency_right = 1;
+        #10; // Hold both FSMs in Red state for 10 minutes
+        emergency_right = 0;
+        
+        // Test Emergency Left Mode (only T1 stops)
+        emergency_left = 1;
+        #10; // Hold T1 in Red state and let T2 continue
+        emergency_left = 0;
+
+        // Add more testing scenarios as needed
+        #5;
+        $finish;  // End simulation
+    end
+
+    // Monitor outputs
+    initial begin
+        $monitor("Time = %0t, T1 = %b, T2 = %b, Buzzer_1 = %b, Buzzer_2 = %b, T1_walk = %b, T2_walk = %b", 
+                 $time, T1, T2, buzzer_1, buzzer_2, T1_walk, T2_walk);
+    end
+
+endmodule
