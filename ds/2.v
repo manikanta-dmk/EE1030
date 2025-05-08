@@ -21,9 +21,9 @@ module hybrid_traffic_signal_control_fsm (
     reg [23:0] emergency_timer;
 
     // Time parameters
-    parameter T_RED = 70;    // 35 sec @ 0.5s
-    parameter T_GREEN = 60;  // 30 sec
-    parameter T_YELLOW = 10; // 5 sec
+    parameter T_RED = 35;    // 35 sec @ 0.5s
+    parameter T_GREEN = 30;  // 30 sec
+    parameter T_YELLOW = 5; // 5 sec
     parameter EMERGENCY_TIME = 600; // 10 minutes (in clock cycles)
 
     // T1 FSM
@@ -90,7 +90,7 @@ module hybrid_traffic_signal_control_fsm (
         case (state_T1)
             RED: begin
                 T1 = 3'b100;
-                if (timer_T1 >= T_RED - 10) buzzer_1 = 1;  // last 5 sec
+                if (timer_T1 >= T_RED - 5) buzzer_1 = 1;  // last 5 sec
             end
             GREEN:  T1 = 3'b001;
             YELLOW: T1 = 3'b010;
@@ -99,7 +99,7 @@ module hybrid_traffic_signal_control_fsm (
         case (state_T2)
             RED: begin
                 T2 = 3'b100;
-                if (timer_T2 >= T_RED - 10) buzzer_2 = 1;  // last 5 sec
+                if (timer_T2 >= T_RED - 5) buzzer_2 = 1;  // last 5 sec
             end
             GREEN:  T2 = 3'b001;
             YELLOW: T2 = 3'b010;
